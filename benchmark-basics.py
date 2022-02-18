@@ -1,4 +1,5 @@
 import os
+from sys import exit
 import json
 import shutil
 from time import time
@@ -25,26 +26,7 @@ def tstamp():
     _rn = datetime.now(pytz.timezone('US/Eastern'))
     return f"{_rn.year:04d}{_rn.month:02d}{_rn.day:02d}-{_rn.hour:02d}{_rn.minute:02d}{_rn.second:02d}"
 
-ntrials=4
-mountpt = os.path.abspath("/mnt/rowley/data-lake/TEST")
-localpt = os.path.abspath("/home/patch/rowley/dmbm")
-test_set = glob.glob(os.path.join(mountpt,"*.zip"))
-## alternatively, define manually using a list
-#test_set = ["10minStaticDataSet_Cu64.zip", "90minDynamicDataSet_Cu64.zip"]
-fn_results=os.path.join(localpt,f"results_{tstamp()}.csv")
-fn_details=os.path.join(localpt,f"details_{tstamp()}.json")
-fn_results_delim='\t'
-
-print()
-print("Beginning Data Management Benchmarking")
-print()
-print("\t[... this might take a while...]")
-print()
-print("\tWorking with the following datasets:")
-print(f"\t . {test_set}")
-print()
-
-def details_to_JSON(fn_details, ntrials, test_set, mountpt, localpt, fn_results, fn_delim):
+def details_to_JSON(fn_details, ntrials, test_set, mountpt, localpt, fn_results, fn_results_delim):
     """
     Print all relevant details to JSON 
     """
@@ -59,6 +41,32 @@ def details_to_JSON(fn_details, ntrials, test_set, mountpt, localpt, fn_results,
     
     with open(fn_details, 'w') as _of:
         json.dump(details, _of)
+
+
+ntrials=4
+# mountpt = os.path.abspath("/mnt/rowley/data-lake/TEST")
+mountpt = os.path.abspath(r"Z:\data-lake\TEST")
+# localpt = os.path.abspath("/home/patch/rowley/dm-bench")
+localpt = os.path.abspath(r"C:\Users\patch\Documents\GitHub\dm-bench")
+test_set = glob.glob(os.path.join(mountpt,"*.zip"))
+## alternatively, define manually using a list
+#test_set = ["10minStaticDataSet_Cu64.zip", "90minDynamicDataSet_Cu64.zip"]
+fn_results=os.path.join(localpt,f"results_{tstamp()}.csv")
+fn_details=os.path.join(localpt,f"details_{tstamp()}.json")
+fn_results_delim='\t'
+verbose=False
+
+details_to_JSON(fn_details, ntrials, test_set, mountpt, localpt, fn_results, fn_results_delim)
+
+
+print()
+print("Beginning Data Management Benchmarking")
+print()
+print("\t[... this might take a while...]")
+print()
+print("\tWorking with the following datasets:")
+print(f"\t . {test_set}")
+print()
 
 
 def endpoints(test_set, mountpt, localpt): 
@@ -129,8 +137,10 @@ def run_copy_cycle(_b, _tmp, ntrials, path_A, path_B, ZorF='Z'):
         else:
             _A = rename_iter(path_A,tag=f"_C{_i-1}",directory=False)
         _B = rename_iter(path_B,tag=f"_C{_i}",directory=False)
-        print("A:",_A)
-        print("B:",_B)
+        
+        if verbose:
+            print("A:",_A)
+            print("B:",_B)
 
         _t_elapse = run_copy(_A,_B)
         _b[('Copy',ZorF,'Mount','Local')].append(_t_elapse)
@@ -310,8 +320,9 @@ for _t in test_set:
     # List `_tmp` stores list of every item generated during tests
     _tmp = []
 
-    print("mountpt: ",mountpt)
-    print("localpt: ",localpt)
+    if verbose:
+        print("mountpt: ",mountpt)
+        print("localpt: ",localpt)
 
     # Initialize base Folder copy by extracting from base Zip
     _m0, _l0 = endpoints(_t, mountpt, localpt)
@@ -320,8 +331,9 @@ for _t in test_set:
     _b[('Extract','Z','Mount','Mount')].append(_t_elapse)
     print_report('Extract',_m0,_unzipped,_t_elapse)
 
-    print("_m0:",_m0)
-    print("_l0:",_l0)
+    if verbose:
+        print("_m0:",_m0)
+        print("_l0:",_l0)
 
     # Copy Zipfiles
     zip_copies = run_copy_cycle(_b,_tmp, ntrials, _m0, _l0, ZorF='Z')
@@ -352,7 +364,7 @@ for _t in test_set:
 
 df_bench = pd.Series(bench).reset_index()
 df_bench.columns = ['Item','Action','Type','Source','Target','Trials']
-clean_up_foldernames(df_bench)
+clean_up_folder_names(df_bench)
 df_bench.to_csv(fn_results,sep=fn_results_delim)
 print(df_bench)
 print()
