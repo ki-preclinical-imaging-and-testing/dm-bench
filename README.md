@@ -12,7 +12,7 @@ cases. Current version requires manual update of parameters inside of
 `benchmark-basics.py`. Furthermore, at runtime, if the mountpoint requires
 super-user privileges, then you likely need to run with the following syntax:
 
-   $ sudo env PATH="$PATH" python benchmark-basics.py 
+      $ sudo env PATH="$PATH" python benchmark-basics.py 
 
 This provides priveleges while retaining your user's Python path.
 
