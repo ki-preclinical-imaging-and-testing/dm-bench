@@ -16,3 +16,7 @@ super-user privileges, then you likely need to run with the following syntax:
 
 This provides priveleges while retaining your user's Python path.
 
+## `benchmark-basics-analysis.ipynb`
+This iPython notebook provides some basic functions for opening the output of
+`benchmark-basics.py` and analyzing it with an eye for speed and scaling.
+
