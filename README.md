@@ -1,7 +1,7 @@
 # dm-bench
 Tools for data management benchmarking
 
-## benchmark-basics.py
+## `benchmark-basics.py`
 This script contains a diagnostic routine for testing
 COPY/EXTRACT/COMPRESS/DELETE actions from one folder to another. It is designed
 as a diagnostic for working with files via a local mountpoint and remains
