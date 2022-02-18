@@ -21,6 +21,9 @@ import glob
 #    4. Add docstrings to functions... 
 #    5. Tend to internal TODO's 
 
+def tstamp():
+    _rn = datetime.now(pytz.timezone('US/Eastern'))
+    return f"{_rn.year:04d}{_rn.month:02d}{_rn.day:02d}-{_rn.hour:02d}{_rn.minute:02d}{_rn.second:02d}"
 
 ntrials=4
 mountpt = os.path.abspath("/mnt/rowley/data-lake/TEST")
@@ -40,10 +43,6 @@ print()
 print("\tWorking with the following datasets:")
 print(f"\t . {test_set}")
 print()
-
-def tstamp():
-    _rn = datetime.now(pytz.timezone('US/Eastern'))
-    return f"{_rn.year:04d}{_rn.month:02d}{_rn.day:02d}-{_rn.hour:02d}{_rn.minute:02d}{_rn.second:02d}"
 
 def details_to_JSON(fn_details, ntrials, test_set, mountpt, localpt, fn_results, fn_delim):
     """
